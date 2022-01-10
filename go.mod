@@ -1,6 +1,7 @@
 module github.com/lazaropj/rmad_api
 
-go 1.17
+// +heroku goVersion go1.17
+go 1.16
 
 require github.com/gorilla/mux v1.8.0
 
