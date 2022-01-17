@@ -35,7 +35,7 @@ func init() {
 	}
 
 	DB = conn
-	DB.Debug().AutoMigrate(&Account{}, &Travel{}) //Database migration
+	DB.Debug().AutoMigrate(&Account{}, &Travel{}, &Election{}) //Database migration
 }
 
 //returns a handle to the DB object

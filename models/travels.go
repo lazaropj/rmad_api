@@ -14,14 +14,11 @@ type Travel struct {
 	Description string    `json:"description"`
 	Route       string    `json:"route"`
 	StartDate   time.Time `json:"start_date"`
+	FinishDate  time.Time `json:"finish_date"`
+	Code        string    `json:"code"gorm:"unique"`
 	UserId      uint      `json:"user_id"` //The user that this contact belongs to
 }
 
-/*
- This struct function validate the required parameters sent through the http request body
-
-returns message and true if the requirement is met
-*/
 func (travel *Travel) Validate() (map[string]interface{}, bool) {
 
 	if travel.Title == "" {
@@ -54,13 +51,14 @@ func (travel *Travel) Create() map[string]interface{} {
 	return resp
 }
 
-func GetTravel(id uint) *Travel {
+func GetTravel(clause string, value string) *Travel {
 
 	travel := &Travel{}
-	err := GetDB().Table("travels").Where("id = ?", id).First(travel).Error
+	err := GetDB().Table("travels").Where(clause+" = ?", value).First(travel).Error
 	if err != nil {
 		return nil
 	}
+
 	return travel
 }
 
@@ -74,4 +72,21 @@ func GetTravels(user uint) []*Travel {
 	}
 
 	return travels
+}
+
+func FinishTravel(id string) *Travel {
+
+	travel := &Travel{}
+	err := GetDB().Table("travels").Where("id = ?", id).First(travel).Error
+	if err != nil {
+		return nil
+	}
+
+	travel.FinishDate = time.Now()
+	travel.Code = u.GenerateRandomString(10)
+	fmt.Println("Travel finished:", travel)
+
+	GetDB().Save(travel)
+
+	return travel
 }

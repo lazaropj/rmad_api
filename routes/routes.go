@@ -33,7 +33,9 @@ func HandleResquest() {
 	r.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("Post")
 	r.HandleFunc("/api/user/login", controllers.Authenticate).Methods("Post")
 	r.HandleFunc("/api/travel", controllers.GetTravelsFor).Methods("Get")
+	r.HandleFunc("/api/travel/finish/{id}", controllers.FinishTravel).Methods("Put")
 	r.HandleFunc("/api/travel", controllers.CreateTravel).Methods("Post")
+	r.HandleFunc("/api/travel/vote", controllers.VoteOnTravel).Methods("Post")
 	log.Fatal(http.ListenAndServe(":"+port, handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))
 
 }

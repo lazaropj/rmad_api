@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/lazaropj/rmad_api/models"
 	u "github.com/lazaropj/rmad_api/utils"
 )
@@ -24,11 +25,22 @@ var CreateTravel = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-var GetTravelsFor = func(w http.ResponseWriter, r *http.Request) {
+func GetTravelsFor(w http.ResponseWriter, r *http.Request) {
 
 	id := r.Context().Value("accountId").(uint)
 	data := models.GetTravels(id)
 	resp := u.Message(true, "success")
 	resp["data"] = data
 	u.Respond(w, resp)
+}
+
+func FinishTravel(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+	data := models.FinishTravel(id)
+	resp := u.Message(true, "success")
+	resp["data"] = data
+	u.Respond(w, resp)
+
 }
