@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/lazaropj/rmad_api/models"
 	u "github.com/lazaropj/rmad_api/utils"
 )
@@ -37,4 +38,27 @@ func VoteOnTravel(w http.ResponseWriter, r *http.Request) {
 
 	u.Respond(w, resp)
 
+}
+
+func GetAverageByTravel(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	travelId := vars["travelId"]
+
+	if travelId == "" {
+		u.Respond(w, u.Message(false, "TravelId is required"))
+		return
+	}
+
+	average := models.GetAverageByTravel(travelId)
+
+	if average == 0 {
+		u.Respond(w, u.Message(false, "Average is zero for travelId: "+travelId))
+		return
+	}
+
+	resp := u.Message(true, "success")
+	resp["average"] = average
+
+	u.Respond(w, resp)
 }

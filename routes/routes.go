@@ -15,27 +15,23 @@ import (
 func HandleResquest() {
 	r := mux.NewRouter()
 
-	port := os.Getenv("PORT") //Get port from .env file, we did not specify any port so this should return an empty string when tested locally
+	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8000" //localhost
+		port = "8000"
 	}
 
-	fmt.Println(port)
+	fmt.Println("Port: " + port)
 
 	//r.Use(middleware.ContentTypeMiddleware)
 	r.Use(app.JwtAuthentication)
 	r.HandleFunc("/", controllers.Home)
-	r.HandleFunc("/api/personalidades", controllers.TodasPersonalidades).Methods("Get")
-	r.HandleFunc("/api/personalidades/{id}", controllers.RetornaUmaPersonalidade).Methods("Get")
-	r.HandleFunc("/api/personalidades", controllers.CriarNovaPersonalidade).Methods("Post")
-	r.HandleFunc("/api/personalidades/{id}", controllers.DeletarPersonalidade).Methods("Delete")
-	r.HandleFunc("/api/personalidades/{id}", controllers.EditarPersonalidade).Methods("Put")
 	r.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("Post")
 	r.HandleFunc("/api/user/login", controllers.Authenticate).Methods("Post")
 	r.HandleFunc("/api/travel", controllers.GetTravelsFor).Methods("Get")
 	r.HandleFunc("/api/travel/finish/{id}", controllers.FinishTravel).Methods("Put")
 	r.HandleFunc("/api/travel", controllers.CreateTravel).Methods("Post")
 	r.HandleFunc("/api/travel/vote", controllers.VoteOnTravel).Methods("Post")
+	r.HandleFunc("/api/election/average/{travelId}", controllers.GetAverageByTravel).Methods("Get")
 	log.Fatal(http.ListenAndServe(":"+port, handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))
 
 }
